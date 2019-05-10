@@ -1,6 +1,6 @@
 package com.ashleyecs;
 
-import com.ashleyecs.controllers.KeyboardController;
+import com.ashleyecs.controller.KeyboardController;
 import com.ashleyecs.loader.AshleyAssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 
-public class AshleyModel {
+public class GameModel {
 
     public World world;
     private Body bodyd;
@@ -16,7 +16,7 @@ public class AshleyModel {
     private Body bodyk;
 
     private Sound ping;
-   	private Sound boing;
+    private Sound boing;
 
     public KeyboardController controller;
     private AshleyAssetManager assMan;
@@ -25,16 +25,17 @@ public class AshleyModel {
     private OrthographicCamera camera;
 
     public static final int BOING_SOUND = 0;
-   	public static final int PING_SOUND = 1;
+    public static final int PING_SOUND = 1;
 
     public boolean isSwimming = false;
 
     public Body player;
+
     /*------------------------------------------------------------------*\
     |*							Constructors
     \*------------------------------------------------------------------*/
 
-    public AshleyModel(KeyboardController ctrlr, OrthographicCamera cam, AshleyAssetManager assMan) {
+    public GameModel(KeyboardController ctrlr, OrthographicCamera cam, AshleyAssetManager assMan) {
         this.assMan = assMan;
 
         camera = cam;
@@ -50,7 +51,6 @@ public class AshleyModel {
 
         ping = assMan.manager.get("sounds/ping.wav", Sound.class);
         boing = assMan.manager.get("sounds/boing.wav", Sound.class);
-
 
 
         // get our body factory singleton and store it in bodyFactory

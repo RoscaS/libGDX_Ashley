@@ -1,8 +1,8 @@
 package com.ashleyecs.views;
 
 import com.ashleyecs.AshleyGame;
-import com.ashleyecs.AshleyModel;
-import com.ashleyecs.controllers.KeyboardController;
+import com.ashleyecs.GameModel;
+import com.ashleyecs.controller.KeyboardController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 public class MainScreen implements Screen {
 
     private AshleyGame parent;
-    private AshleyModel model;
+    private GameModel model;
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera cam;
     private KeyboardController controller;
@@ -30,7 +30,7 @@ public class MainScreen implements Screen {
         this.parent = parent;
         cam = new OrthographicCamera(32, 24);
         controller = new KeyboardController();
-        model = new AshleyModel(controller, cam, parent.assMan);
+        model = new GameModel(controller, cam, parent.assMan);
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
 
         sb = new SpriteBatch();

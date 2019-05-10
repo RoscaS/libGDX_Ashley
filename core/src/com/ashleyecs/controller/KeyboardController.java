@@ -1,4 +1,4 @@
-package com.ashleyecs.controllers;
+package com.ashleyecs.controller;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;

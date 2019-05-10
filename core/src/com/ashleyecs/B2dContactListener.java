@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.*;
 
 public class B2dContactListener implements ContactListener {
 
-    private AshleyModel parent;
+    private GameModel parent;
 
-    public B2dContactListener(AshleyModel parent) {
+    public B2dContactListener(GameModel parent) {
         this.parent = parent;
     }
 
@@ -39,7 +39,7 @@ public class B2dContactListener implements ContactListener {
     private void shootUpInAir(Fixture staticFixture, Fixture otherFixture) {
         System.out.println("Adding Force");
         otherFixture.getBody().applyForceToCenter(new Vector2(-1000, -1000), true);
-        parent.playSound(AshleyModel.BOING_SOUND);
+        parent.playSound(GameModel.BOING_SOUND);
     }
 
 
