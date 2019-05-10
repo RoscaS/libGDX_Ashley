@@ -40,7 +40,7 @@ public class PreferencesScreen implements Screen {
    		// this table.
    		Table table = new Table();
    		table.setFillParent(true);
-   		//table.setDebug(true);
+   		// table.setDebug(true);
    		stage.addActor(table);
 
    		// temporary until we have asset manager in

@@ -20,10 +20,10 @@ public class B2dContactListener implements ContactListener {
         System.out.println(fa.getBody().getType() + " has hit " + fb.getBody().getType());
 
         if (fa.getBody().getUserData() == "IAMTHESEA") {
-            // we will ad some code here to say our player is in the water
+            parent.isSwimming = true;
             return;
         } else if (fb.getBody().getUserData() == "IAMTHESEA") {
-            // we will ad some code here to say our player is in the water
+            parent.isSwimming = true;
             return;
         }
 
@@ -35,6 +35,13 @@ public class B2dContactListener implements ContactListener {
             // neither a nor b are static so do nothing
         }
     }
+
+    private void shootUpInAir(Fixture staticFixture, Fixture otherFixture) {
+        System.out.println("Adding Force");
+        otherFixture.getBody().applyForceToCenter(new Vector2(-1000, -1000), true);
+        parent.playSound(AshleyModel.BOING_SOUND);
+    }
+
 
     @Override
     public void endContact(Contact contact) {
@@ -52,21 +59,10 @@ public class B2dContactListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-
     }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-
-    }
-
-	/*------------------------------------------------------------------*\
-	|*							Private Methods
-	\*------------------------------------------------------------------*/
-
-    private void shootUpInAir(Fixture staticFixture, Fixture otherFixture) {
-        System.out.println("Adding Force");
-        otherFixture.getBody().applyForceToCenter(new Vector2(-100000, -100000), true);
     }
 
 }

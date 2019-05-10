@@ -1,44 +1,71 @@
 package com.ashleyecs;
 
+import com.ashleyecs.controllers.KeyboardController;
+import com.ashleyecs.loader.AshleyAssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class AshleyModel {
 
     public World world;
-    private Box2DDebugRenderer debugRenderer;
-    private OrthographicCamera camera;
-
     private Body bodyd;
     private Body bodys;
     private Body bodyk;
 
-    public boolean isSwimming = false;
-    private Body player;
+    private Sound ping;
+   	private Sound boing;
 
+    public KeyboardController controller;
+    private AshleyAssetManager assMan;
+
+    private Box2DDebugRenderer debugRenderer;
+    private OrthographicCamera camera;
+
+    public static final int BOING_SOUND = 0;
+   	public static final int PING_SOUND = 1;
+
+    public boolean isSwimming = false;
+
+    public Body player;
     /*------------------------------------------------------------------*\
     |*							Constructors
     \*------------------------------------------------------------------*/
 
-    public AshleyModel() {
-        world = new World(new Vector2(0,-10f), true);
-       	world.setContactListener(new B2dContactListener(this));
-       	createFloor();
-       	//createObject();
-       	//createMovingObject();
+    public AshleyModel(KeyboardController ctrlr, OrthographicCamera cam, AshleyAssetManager assMan) {
+        this.assMan = assMan;
 
-       	// get our body factory singleton and store it in bodyFactory
-       	BodyFactory bodyFactory = BodyFactory.getInstance(world);
+        camera = cam;
+        controller = ctrlr;
+        world = new World(new Vector2(0, -10f), true);
+        world.setContactListener(new B2dContactListener(this));
+        createFloor();
+        //createObject();
+        //createMovingObject();
 
-       	// add a player
-       	player = bodyFactory.makeBoxPolyBody(1, 1, 2, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody,false);
+        assMan.queueAddSounds();
+        assMan.manager.finishLoading();
 
-       	// add some water
-       	Body water =  bodyFactory.makeBoxPolyBody(1, -8, 40, 4, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody,false);
-       	// make the water a sensor so it doesn't obstruct our player
-       	bodyFactory.makeAllFixturesSensors(water);
+        ping = assMan.manager.get("sounds/ping.wav", Sound.class);
+        boing = assMan.manager.get("sounds/boing.wav", Sound.class);
+
+
+
+        // get our body factory singleton and store it in bodyFactory
+        BodyFactory bodyFactory = BodyFactory.getInstance(world);
+
+        // add a player
+        player = bodyFactory.makeBoxPolyBody(1, 1, 2, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody, false);
+
+        // add some water
+        Body water = bodyFactory.makeBoxPolyBody(1, -8, 40, 4, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody, false);
+
         water.setUserData("IAMTHESEA");
+
+        // make the water a sensor so it doesn't obstruct our player
+        bodyFactory.makeAllFixturesSensors(water);
     }
 
     /*------------------------------------------------------------------*\
@@ -46,10 +73,48 @@ public class AshleyModel {
     \*------------------------------------------------------------------*/
 
     public void logicStep(float delta) {
-        if(isSwimming){
-      		player.applyForceToCenter(0, 50, true);
-      	}
-      	world.step(delta , 3, 3);
+
+        if (controller.isMouse1Down && pointIntersectsBody(player, controller.mouseLocation)) {
+            System.out.println("Player was clicked");
+        }
+
+        if (controller.left) {
+            player.applyForceToCenter(-10, 0, true);
+        } else if (controller.right) {
+            player.applyForceToCenter(10, 0, true);
+        } else if (controller.up) {
+            player.applyForceToCenter(0, -10, true);
+        }
+
+        if (isSwimming) {
+            player.applyForceToCenter(0, 40, true);
+        }
+
+        world.step(delta, 3, 3);
+    }
+
+    /*------------------------------------------------------------------*\
+    |*							Public Methods
+    \*------------------------------------------------------------------*/
+
+    public boolean pointIntersectsBody(Body body, Vector2 mouseLocation) {
+        Vector3 mousePos = new Vector3(mouseLocation, 0); //convert mouseLocation to 3D position
+        camera.unproject(mousePos); // convert from screen potition to world position
+        if (body.getFixtureList().first().testPoint(mousePos.x, mousePos.y)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void playSound(int sound) {
+        switch (sound) {
+            case BOING_SOUND:
+                boing.play();
+                break;
+            case PING_SOUND:
+                ping.play();
+                break;
+        }
     }
 
     /*------------------------------------------------------------------*\
